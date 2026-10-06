@@ -2,44 +2,30 @@ import { createContext, useContext } from "react";
 import { useLocalStorage } from "./hooks/useLocalStorage";
 import { seed } from "./data";
 
-const AppContext = createContext(null);
+const Ctx = createContext(null);
 // eslint-disable-next-line react-refresh/only-export-components
-export const useApp = () => useContext(AppContext);
+export const useApp = () => useContext(Ctx);
+// eslint-disable-next-line react-refresh/only-export-components
+export const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
 
 export function AppProvider({ children }) {
-  const [db, setDb] = useLocalStorage("luminar_db", seed);
-  const [session, setSession] = useLocalStorage("luminar_session", null);
+  const [db, setDb] = useLocalStorage("luminar_db_v2", seed);
+  const [sessionId, setSessionId] = useLocalStorage("luminar_session_v2", null);
+  const user = db.users.find((u) => u.id === sessionId) || null;
 
-  const same = (a, b) => a.toLowerCase() === b.toLowerCase();
-  const user = session ? db[session.role + "s"].find((u) => u.email === session.email) || null : null;
-
-  const login = (email, password, role) => {
-    const found = db[role + "s"].find((u) => same(u.email, email) && u.password === password);
-    if (found) setSession({ email: found.email, role });
-    return Boolean(found);
+  const login = (email, password) => {
+    const u = db.users.find((x) => x.email.toLowerCase() === email.toLowerCase() && x.password === password);
+    if (u) setSessionId(u.id);
+    return Boolean(u);
   };
-  const logout = () => setSession(null);
-
-  const register = (role, form) => {
-    const key = role + "s";
-    if (db[key].some((u) => same(u.email, form.email))) {
-      return { ok: false, message: "This email is already registered." };
-    }
-    const account = role === "student" ? { ...form, role, enrollments: [], applications: [] } : { ...form, role };
-    setDb((d) => ({ ...d, [key]: [...d[key], account] }));
-    return { ok: true, message: "Registration complete! Redirecting to login..." };
+  const logout = () => setSessionId(null);
+  const register = (form) => {
+    if (db.users.some((u) => u.email.toLowerCase() === form.email.toLowerCase())) return false;
+    setDb((d) => ({ ...d, users: [...d.users, { ...form, id: uid(), role: "parent" }] }));
+    return true;
   };
 
-  // Update the logged-in user: updateUser(u => ({ ...u, ... }))
-  const updateUser = (fn) =>
-    setDb((d) => {
-      const key = session.role + "s";
-      return { ...d, [key]: d[key].map((u) => (u.email === session.email ? fn(u) : u)) };
-    });
-
-  return (
-    <AppContext.Provider value={{ db, setDb, user, login, logout, register, updateUser }}>
-      {children}
-    </AppContext.Provider>
-  );
+  // Helpers to join related records
+  const find = (list, id) => db[list].find((x) => x.id === id);
+  return <Ctx.Provider value={{ db, setDb, user, login, logout, register, find }}>{children}</Ctx.Provider>;
 }

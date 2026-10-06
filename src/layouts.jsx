@@ -1,66 +1,81 @@
 import { NavLink, Navigate, Outlet, useNavigate } from "react-router-dom";
 import { useApp } from "./store";
+import { useT } from "./i18n";
+import { WHATSAPP, WHATSAPP_LABEL } from "./data";
+import Logo from "./components/Logo";
 
 const menus = {
-  student: [
-    ["/dashboard", "📊 Dashboard"], ["/dashboard/payments", "💳 Payment Info"],
-    ["/dashboard/registration", "📝 Registration"], ["/dashboard/courses", "📚 My Courses"],
-    ["/dashboard/internships", "💼 Internships"], ["/dashboard/drop-semester", "❌ Drop Semester"],
-    ["/dashboard/results", "📑 Results"], ["/dashboard/notices", "📢 Notices"], ["/dashboard/schedule", "📅 Schedule"],
-  ],
-  employer: [
-    ["/dashboard", "📊 Dashboard"], ["/dashboard/postings", "📌 Internship Postings"],
-    ["/dashboard/candidates", "👥 Candidates"], ["/dashboard/notices", "📢 Notices"],
-  ],
+  parent: [["/app", "m.dashboard"], ["/app/children", "m.children"], ["/app/enroll", "m.enroll"], ["/app/payments", "m.payments"]],
+  tutor: [["/app", "m.dashboard"], ["/app/students", "m.students"], ["/app/sessions", "m.sessions"]],
+  admin: [["/app", "m.dashboard"], ["/app/requests", "m.requests"], ["/app/payments", "m.payments"]],
 };
 
-const Footer = () => (
-  <footer id="main-footer"><p>&copy; 2026 Academia Luminar. All rights reserved.</p></footer>
-);
+function LangSwitch() {
+  const { lang, setLang } = useT();
+  return (
+    <div className="lang" role="group" aria-label="Language">
+      {["pt", "en"].map((l) => (
+        <button key={l} className={lang === l ? "on" : ""} onClick={() => setLang(l)}>{l.toUpperCase()}</button>
+      ))}
+    </div>
+  );
+}
+
+export function WhatsApp({ big }) {
+  const { t } = useT();
+  return (
+    <a className={"wa" + (big ? " big" : "")} href={`https://wa.me/${WHATSAPP}`} target="_blank" rel="noreferrer">
+      <small>{t("wa")}</small><strong>{WHATSAPP_LABEL}</strong>
+    </a>
+  );
+}
 
 export function PublicLayout() {
-  const links = [["/", "Home"], ["/about", "About Us"], ["/login", "Login"],
-    ["/register/student", "Student Register"], ["/register/employer", "Employer Register"]];
-  return (
-    <>
-      <header id="main-header">
-        <h1>Academia Luminar</h1>
-        <nav><ul>{links.map(([to, label]) => <li key={to}><NavLink to={to}>{label}</NavLink></li>)}</ul></nav>
-      </header>
-      <main><Outlet /></main>
-      <Footer />
-    </>
-  );
-}
-
-export function DashboardLayout() {
-  const { user, logout } = useApp();
-  const navigate = useNavigate();
-  if (!user) return <Navigate to="/login" replace />; // route protection
-
-  return (
-    <>
-      <div className="dashboard-wrapper">
-        <aside className="sidebar">
-          <div className="sidebar-logo">🎓 <h2>Academia Luminar</h2></div>
-          <ul className="sidebar-menu">
-            {menus[user.role].map(([to, label]) => (
-              <li key={to}><NavLink to={to} end={to === "/dashboard"}>{label}</NavLink></li>
-            ))}
-            <li>
-              <a href="#" className="logout-btn" onClick={(e) => { e.preventDefault(); logout(); navigate("/"); }}>🚪 Logout</a>
-            </li>
-          </ul>
-        </aside>
-        <main className="dashboard-main"><Outlet /></main>
-      </div>
-      <Footer />
-    </>
-  );
-}
-
-// Only lets the given role open the page
-export function Only({ role, children }) {
+  const { t } = useT();
   const { user } = useApp();
-  return user?.role === role ? children : <Navigate to="/dashboard" replace />;
+  return (
+    <>
+      <header className="top">
+        <NavLink to="/"><Logo /></NavLink>
+        <nav>
+          <NavLink to="/" end>{t("nav.home")}</NavLink>
+          {user ? <NavLink to="/app">{t("m.dashboard")}</NavLink> : <>
+            <NavLink to="/login">{t("nav.login")}</NavLink>
+            <NavLink to="/register" className="pill">{t("nav.register")}</NavLink>
+          </>}
+          <LangSwitch />
+        </nav>
+      </header>
+      <Outlet />
+      <footer className="foot"><Logo light /><p>{t("brand.tag")} · © 2026 Academia Luminar · {WHATSAPP_LABEL}</p></footer>
+    </>
+  );
+}
+
+export function AppLayout() {
+  const { user, logout } = useApp();
+  const { t } = useT();
+  const navigate = useNavigate();
+  if (!user) return <Navigate to="/login" replace />;
+  return (
+    <div className="shell">
+      <aside className="side">
+        <Logo light />
+        <nav>
+          {menus[user.role].map(([to, key]) => <NavLink key={to} to={to} end={to === "/app"}>{t(key)}</NavLink>)}
+        </nav>
+        <div className="side-foot">
+          <small>{user.name}</small>
+          <LangSwitch />
+          <button className="link" onClick={() => { logout(); navigate("/"); }}>{t("logout")}</button>
+        </div>
+      </aside>
+      <main className="content"><Outlet /></main>
+    </div>
+  );
+}
+
+export function Only({ roles, children }) {
+  const { user } = useApp();
+  return roles.includes(user?.role) ? children : <Navigate to="/app" replace />;
 }

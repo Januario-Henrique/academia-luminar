@@ -1,74 +1,57 @@
 import { useState } from "react";
-import { Navigate, useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useApp } from "../store";
+import { useT } from "../i18n";
 
 export function Login() {
   const { login } = useApp();
+  const { t } = useT();
   const navigate = useNavigate();
-  const [form, setForm] = useState({ email: "", password: "", role: "student" });
-  const [error, setError] = useState("");
-  const change = (e) => setForm({ ...form, [e.target.name]: e.target.value });
-
+  const [f, setF] = useState({ email: "", password: "" });
+  const [err, setErr] = useState(false);
   const submit = (e) => {
     e.preventDefault();
-    if (login(form.email.trim(), form.password, form.role)) navigate("/dashboard");
-    else setError("Incorrect email or password.");
+    if (login(f.email.trim(), f.password)) navigate("/app");
+    else setErr(true);
   };
-
   return (
-    <section>
-      <h2>User Login</h2>
-      <p style={{ color: "red", fontWeight: "bold" }}>{error}</p>
+    <section className="auth">
+      <h1>{t("login.title")}</h1>
+      {err && <p className="err">{t("login.err")}</p>}
       <form onSubmit={submit}>
-        <label>Email Address: <input type="email" name="email" value={form.email} onChange={change} required /></label>
-        <label>Password: <input type="password" name="password" value={form.password} onChange={change} required minLength={6} /></label>
-        <label>User Role:
-          <select name="role" value={form.role} onChange={change}>
-            <option value="student">Student</option>
-            <option value="employer">Employer</option>
-          </select>
-        </label>
-        <button type="submit">Login</button>
+        <label>{t("email")}<input type="email" value={f.email} onChange={(e) => setF({ ...f, email: e.target.value })} required /></label>
+        <label>{t("password")}<input type="password" value={f.password} onChange={(e) => setF({ ...f, password: e.target.value })} required minLength={6} /></label>
+        <button className="btn navy">{t("nav.login")}</button>
       </form>
-      <p className="hint">Demo: student@example.com or employer@example.com / password123</p>
-    </section>
-  );
-}
-
-function RegisterForm({ role }) {
-  const { register } = useApp();
-  const navigate = useNavigate();
-  const isStudent = role === "student";
-  const [form, setForm] = useState({ name: "", companyName: "", email: "", password: "" });
-  const [msg, setMsg] = useState({ text: "", color: "green" });
-  const change = (e) => setForm({ ...form, [e.target.name]: e.target.value });
-
-  const submit = (e) => {
-    e.preventDefault();
-    const payload = { ...form, name: form.name.trim(), email: form.email.trim() };
-    if (isStudent) delete payload.companyName;
-    const res = register(role, payload);
-    setMsg({ text: res.message, color: res.ok ? "green" : "red" });
-    if (res.ok) setTimeout(() => navigate("/login"), 1500);
-  };
-
-  return (
-    <section>
-      <h2>{isStudent ? "Student Registration" : "Employer Registration"}</h2>
-      <p style={{ fontWeight: "bold", color: msg.color }}>{msg.text}</p>
-      <form onSubmit={submit}>
-        <label>{isStudent ? "Full Name:" : "Contact Name:"} <input name="name" value={form.name} onChange={change} required /></label>
-        {!isStudent && <label>Company Name: <input name="companyName" value={form.companyName} onChange={change} required /></label>}
-        <label>{isStudent ? "Email:" : "Work Email:"} <input type="email" name="email" value={form.email} onChange={change} required /></label>
-        <label>Password: <input type="password" name="password" value={form.password} onChange={change} required minLength={6} /></label>
-        <button type="submit">{isStudent ? "Register as Student" : "Register as Employer"}</button>
-      </form>
+      <p className="hint">{t("login.demo")}</p>
     </section>
   );
 }
 
 export function Register() {
-  const { role } = useParams();
-  if (role !== "student" && role !== "employer") return <Navigate to="/" replace />;
-  return <RegisterForm key={role} role={role} />;
+  const { register } = useApp();
+  const { t } = useT();
+  const navigate = useNavigate();
+  const [f, setF] = useState({ name: "", email: "", phone: "", password: "" });
+  const [msg, setMsg] = useState(null);
+  const set = (k) => (e) => setF({ ...f, [k]: e.target.value });
+  const submit = (e) => {
+    e.preventDefault();
+    const ok = register({ ...f, name: f.name.trim(), email: f.email.trim() });
+    setMsg(ok ? "reg.ok" : "reg.exists");
+    if (ok) setTimeout(() => navigate("/login"), 1200);
+  };
+  return (
+    <section className="auth">
+      <h1>{t("reg.title")}</h1>
+      {msg && <p className={msg === "reg.ok" ? "ok" : "err"}>{t(msg)}</p>}
+      <form onSubmit={submit}>
+        <label>{t("name")}<input value={f.name} onChange={set("name")} required /></label>
+        <label>{t("email")}<input type="email" value={f.email} onChange={set("email")} required /></label>
+        <label>{t("phone")}<input type="tel" value={f.phone} onChange={set("phone")} required /></label>
+        <label>{t("password")}<input type="password" value={f.password} onChange={set("password")} required minLength={6} /></label>
+        <button className="btn navy">{t("nav.register")}</button>
+      </form>
+    </section>
+  );
 }
