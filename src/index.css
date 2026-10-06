@@ -1,111 +1,205 @@
-:root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
-
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
-
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
-  color-scheme: light dark;
-  color: var(--text);
-  background: var(--bg);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-
-  @media (max-width: 1024px) {
-    font-size: 16px;
-  }
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-  }
-
-  #social .button-icon {
-    filter: invert(1) brightness(2);
-  }
-}
-
 body {
-  margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f5f9;
+    color: #333;
 }
 
-#root {
-  width: 1126px;
-  max-width: 100%;
-  margin: 0 auto;
-  text-align: center;
-  border-inline: 1px solid var(--border);
-  min-height: 100svh;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
+/* Header e Main públicos (Antes do login) */
+header {
+    background: #6c5ce7;
+    color: white;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+    margin: 0;
+    padding: 0;
+}
+nav a {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+}
+nav a:hover {
+    text-decoration: underline;
+}
+main:not(.dashboard-main) {
+    padding: 2.5rem;
+    max-width: 600px;
+    margin: 3rem auto;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(108, 92, 231, 0.1);
 }
 
-h1,
-h2 {
-  font-family: var(--heading);
-  font-weight: 500;
-  color: var(--text-h);
+/* FORMULÁRIOS */
+form label {
+    display: block;
+    margin-top: 15px;
+    font-weight: 600;
+    color: #444;
+}
+form input, form select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    box-sizing: border-box;
+}
+button {
+    margin-top: 20px;
+    background: #6c5ce7;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    width: 100%;
+}
+button:hover {
+    background: #5b4bc4;
 }
 
-h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
-  }
-}
-h2 {
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-  @media (max-width: 1024px) {
-    font-size: 20px;
-  }
-}
-p {
-  margin: 0;
+/* --- ESTILO DO DASHBOARD COM SIDEBAR (Estilo Referência) --- */
+.dashboard-wrapper {
+    display: flex;
+    min-height: 100vh;
 }
 
-code,
-.counter {
-  font-family: var(--mono);
-  display: inline-flex;
-  border-radius: 4px;
-  color: var(--text-h);
+.sidebar {
+    width: 260px;
+    background: #6c5ce7;
+    color: white;
+    padding: 2rem 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 4px 0 15px rgba(0,0,0,0.05);
 }
 
-code {
-  font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: var(--code-bg);
+.sidebar-logo h2 {
+    font-size: 1.2rem;
+    margin-top: 10px;
+    text-align: center;
 }
+
+.sidebar-menu {
+    list-style: none;
+    padding: 0;
+    margin: 2rem 0;
+}
+
+.sidebar-menu li {
+    padding: 12px 15px;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background 0.2s;
+}
+
+.sidebar-menu li:hover, .sidebar-menu li.active {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.logout-btn {
+    color: #ffcccc;
+    margin-top: auto;
+}
+
+/* Conteúdo Principal do Dashboard */
+.dashboard-main {
+    flex: 1;
+    padding: 2.5rem;
+    background: #f8f9fe;
+    overflow-y: auto;
+}
+
+/* Banner de Boas-Vindas do Dashboard */
+.welcome-banner {
+    background: linear-gradient(135deg, #7c69ef, #5a45d0);
+    color: white;
+    padding: 2rem;
+    border-radius: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 10px 25px rgba(108, 92, 231, 0.2);
+    margin-bottom: 2rem;
+}
+
+.welcome-banner h2 {
+    margin: 0 0 10px 0;
+    font-size: 1.8rem;
+}
+
+/* Grelha de Cartões */
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    margin-bottom: 2rem;
+}
+
+.card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 14px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    border: 1px solid #eee;
+}
+
+.card h3 {
+    margin-top: 0;
+    color: #444;
+    font-size: 1.1rem;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 8px;
+}
+
+.card ul {
+    padding-left: 20px;
+    margin: 10px 0 0 0;
+}
+
+.card li {
+    margin-bottom: 8px;
+    color: #666;
+}
+
+footer {
+    text-align: center;
+    padding: 1rem;
+    color: #888;
+}
+/* ---- Additions for the React version ---- */
+.sidebar-menu li { padding: 0; }
+.sidebar-menu a { display: block; padding: 12px 15px; border-radius: 8px; color: white; text-decoration: none; font-weight: 500; }
+.sidebar-menu a:hover, .sidebar-menu a.active { background: rgba(255,255,255,.18); }
+.sidebar-menu a.logout-btn { color: #ffcccc; }
+.page-title { margin-top: 0; }
+.card { margin-bottom: 20px; overflow-x: auto; }
+.table { width: 100%; border-collapse: collapse; }
+.table th, .table td { text-align: left; padding: 10px; border-bottom: 1px solid #eee; }
+.btn-sm { width: auto; margin-top: 0; padding: 6px 14px; font-size: .85rem; }
+.btn-danger { background: #d63031; } .btn-danger:hover { background: #b02525; }
+.btn-ok { background: #00a67e; } .btn-ok:hover { background: #008a69; }
+button:disabled { background: #ccc; cursor: default; }
+.badge { padding: 3px 10px; border-radius: 99px; font-size: .8rem; font-weight: 600; background: #eee; }
+.badge.paid, .badge.accepted { background: #d4f5ea; color: #007a5a; }
+.badge.pending, .badge.unpaid { background: #fff0cc; color: #9a6700; }
+.badge.rejected { background: #fde0e0; color: #b02525; }
+.inline-form { display: flex; gap: 10px; flex-wrap: wrap; }
+.inline-form input { flex: 1; min-width: 160px; margin-top: 0; }
+.inline-form button { width: auto; margin-top: 0; }
+.muted { color: #888; }
+.hint { font-size: .85rem; color: #888; }
