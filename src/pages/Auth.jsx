@@ -8,16 +8,17 @@ export function Login() {
   const { t } = useT();
   const navigate = useNavigate();
   const [f, setF] = useState({ email: "", password: "" });
-  const [err, setErr] = useState(false);
+  const [err, setErr] = useState("");
   const submit = (e) => {
     e.preventDefault();
-    if (login(f.email.trim(), f.password)) navigate("/app");
-    else setErr(true);
+    const res = login(f.email.trim(), f.password);
+    if (res === "ok") navigate("/app");
+    else setErr(res === "inactive" ? "login.inactive" : "login.err");
   };
   return (
     <section className="auth">
       <h1>{t("login.title")}</h1>
-      {err && <p className="err">{t("login.err")}</p>}
+      {err && <p className="err">{t(err)}</p>}
       <form onSubmit={submit}>
         <label>{t("email")}<input type="email" value={f.email} onChange={(e) => setF({ ...f, email: e.target.value })} required /></label>
         <label>{t("password")}<input type="password" value={f.password} onChange={(e) => setF({ ...f, password: e.target.value })} required minLength={6} /></label>

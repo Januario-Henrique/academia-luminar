@@ -13,7 +13,7 @@ export const PLANS = [
 export const seed = {
   users: [
     { id: "u1", role: "admin", name: "Luminar Admin", email: "admin@luminar.ao", password: "admin123", phone: "" },
-    { id: "u2", role: "tutor", name: "Ana Costa", email: "tutor@luminar.ao", password: "tutor123", phone: "" },
+    { id: "u2", role: "tutor", name: "Ana Costa", email: "tutor@luminar.ao", password: "tutor123", phone: "", plans: ["primary", "secondary", "english"], active: true },
     { id: "u3", role: "parent", name: "Maria Silva", email: "parent@luminar.ao", password: "parent123", phone: "923000000" },
   ],
   children: [{ id: "c1", parentId: "u3", name: "Pedro Silva", age: 9, year: "4" }],

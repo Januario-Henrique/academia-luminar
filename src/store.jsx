@@ -15,13 +15,15 @@ export function AppProvider({ children }) {
 
   const login = (email, password) => {
     const u = db.users.find((x) => x.email.toLowerCase() === email.toLowerCase() && x.password === password);
-    if (u) setSessionId(u.id);
-    return Boolean(u);
+    if (!u) return "invalid";
+    if (u.active === false) return "inactive"; // deactivated tutor
+    setSessionId(u.id);
+    return "ok";
   };
   const logout = () => setSessionId(null);
-  const register = (form) => {
+  const register = (form, role = "parent") => {
     if (db.users.some((u) => u.email.toLowerCase() === form.email.toLowerCase())) return false;
-    setDb((d) => ({ ...d, users: [...d.users, { ...form, id: uid(), role: "parent" }] }));
+    setDb((d) => ({ ...d, users: [...d.users, { ...form, id: uid(), role }] }));
     return true;
   };
 

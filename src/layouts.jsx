@@ -7,7 +7,7 @@ import Logo from "./components/Logo";
 const menus = {
   parent: [["/app", "m.dashboard"], ["/app/children", "m.children"], ["/app/enroll", "m.enroll"], ["/app/payments", "m.payments"]],
   tutor: [["/app", "m.dashboard"], ["/app/students", "m.students"], ["/app/sessions", "m.sessions"]],
-  admin: [["/app", "m.dashboard"], ["/app/requests", "m.requests"], ["/app/payments", "m.payments"]],
+  admin: [["/app", "m.dashboard"], ["/app/requests", "m.requests"], ["/app/tutors", "m.tutors"], ["/app/payments", "m.payments"]],
 };
 
 function LangSwitch() {

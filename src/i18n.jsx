@@ -53,6 +53,13 @@ const D = {
   "tbl.address": ["Morada", "Address"], "tbl.date": ["Data", "Date"], "tbl.note": ["Nota", "Note"], "tbl.subjects": ["Disciplinas", "Subjects"],
   "approve": ["Aprovar", "Approve"], "pickTutor": ["Escolher professor", "Pick a tutor"], "add": ["Adicionar", "Add"],
   "empty": ["Ainda não há nada aqui.", "Nothing here yet."],
+  "m.tutors": ["Professores", "Tutors"], "tutor.add": ["Criar conta de professor", "Create tutor account"],
+  "tutor.temp": ["Palavra-passe provisória", "Temporary password"], "tutor.plans": ["Planos que leciona", "Plans they teach"],
+  "tutor.created": ["Conta criada! Envie o email e a palavra-passe ao professor.", "Account created! Send the email and password to the tutor."],
+  "tutor.activate": ["Ativar", "Activate"], "tutor.deactivate": ["Desativar", "Deactivate"],
+  "login.inactive": ["Esta conta está desativada. Contacte a Academia Luminar.", "This account is deactivated. Contact Academia Luminar."],
+  "err.blank": ["O nome não pode estar vazio.", "The name cannot be blank."], "err.plans": ["Escolha pelo menos um plano.", "Choose at least one plan."],
+  "tbl.contact": ["Contacto", "Contact"], "tbl.plans": ["Planos", "Plans"], "st.inactive": ["Inativo", "Inactive"],
   "ses.add": ["Registar aula dada", "Log a lesson"], "ses.note": ["Resumo / desempenho do aluno", "Summary / student progress"], "ses.student": ["Aluno", "Student"],
 };
 

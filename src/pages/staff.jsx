@@ -10,7 +10,7 @@ function RequestRow({ r }) {
   const { db, setDb, find } = useApp();
   const { t } = useT();
   const [tutor, setTutor] = useState("");
-  const tutors = db.users.filter((u) => u.role === "tutor");
+  const tutors = db.users.filter((u) => u.role === "tutor" && u.active !== false && u.plans?.includes(r.planId));
 
   const approve = () => {
     const plan = PLANS.find((p) => p.id === r.planId);
@@ -55,6 +55,56 @@ export function Requests() {
           <tbody>{[...db.requests].reverse().map((r) => <RequestRow key={r.id} r={r} />)}</tbody>
         </table>
       )}
+    </>
+  );
+}
+
+export function Tutors() {
+  const { db, setDb, register } = useApp();
+  const { t } = useT();
+  const empty = { name: "", email: "", phone: "", password: "", plans: [] };
+  const [f, setF] = useState(empty);
+  const [msg, setMsg] = useState(null);
+  const set = (k) => (e) => setF({ ...f, [k]: e.target.value });
+  const togglePlan = (id) => setF({ ...f, plans: f.plans.includes(id) ? f.plans.filter((x) => x !== id) : [...f.plans, id] });
+  const tutors = db.users.filter((u) => u.role === "tutor");
+
+  const submit = (e) => {
+    e.preventDefault();
+    const name = f.name.trim();
+    if (!name) return setMsg("err.blank");
+    if (f.plans.length === 0) return setMsg("err.plans");
+    const ok = register({ ...f, name, email: f.email.trim(), active: true }, "tutor");
+    setMsg(ok ? "tutor.created" : "reg.exists");
+    if (ok) setF(empty);
+  };
+  const toggle = (id) => setDb((d) => ({ ...d, users: d.users.map((u) => (u.id === id ? { ...u, active: u.active === false } : u)) }));
+
+  return (
+    <>
+      <h1>{t("m.tutors")}</h1>
+      <form className="stack" onSubmit={submit}>
+        {msg && <p className={msg === "tutor.created" ? "ok" : "err"}>{t(msg)}</p>}
+        <label>{t("name")}<input value={f.name} onChange={set("name")} required /></label>
+        <label>{t("email")}<input type="email" value={f.email} onChange={set("email")} required /></label>
+        <label>{t("phone")}<input type="tel" value={f.phone} onChange={set("phone")} required /></label>
+        <label>{t("tutor.temp")}<input value={f.password} onChange={set("password")} required minLength={6} /></label>
+        <fieldset><legend>{t("tutor.plans")}</legend>
+          {PLANS.map((p) => <label key={p.id} className="chk"><input type="checkbox" checked={f.plans.includes(p.id)} onChange={() => togglePlan(p.id)} />{t("plan." + p.id)}</label>)}
+        </fieldset>
+        <button className="btn navy">{t("tutor.add")}</button>
+      </form>
+      <table>
+        <thead><tr><th>{t("name")}</th><th>{t("tbl.contact")}</th><th>{t("tbl.plans")}</th><th>{t("tbl.status")}</th><th /></tr></thead>
+        <tbody>{tutors.map((u) => (
+          <tr key={u.id}>
+            <td><b>{u.name}</b></td><td>{u.email}<br /><small className="muted">{u.phone}</small></td>
+            <td>{(u.plans || []).map((p) => t("plan." + p)).join(", ")}</td>
+            <td><Badge s={u.active === false ? "inactive" : "active"} /></td>
+            <td><button className="btn navy sm" onClick={() => toggle(u.id)}>{u.active === false ? t("tutor.activate") : t("tutor.deactivate")}</button></td>
+          </tr>
+        ))}</tbody>
+      </table>
     </>
   );
 }

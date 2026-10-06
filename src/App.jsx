@@ -5,7 +5,7 @@ import { Login, Register } from "./pages/Auth";
 import Overview from "./pages/Overview";
 import { Children, Enroll } from "./pages/parent";
 import Payments from "./pages/payments";
-import { Requests, Sessions, Students } from "./pages/staff";
+import { Requests, Sessions, Students, Tutors } from "./pages/staff";
 
 const only = (roles, el) => <Only roles={roles}>{el}</Only>;
 
@@ -23,6 +23,7 @@ export default function App() {
         <Route path="enroll" element={only(["parent"], <Enroll />)} />
         <Route path="payments" element={only(["parent", "admin"], <Payments />)} />
         <Route path="requests" element={only(["admin"], <Requests />)} />
+        <Route path="tutors" element={only(["admin"], <Tutors />)} />
         <Route path="students" element={only(["tutor"], <Students />)} />
         <Route path="sessions" element={only(["tutor"], <Sessions />)} />
       </Route>
